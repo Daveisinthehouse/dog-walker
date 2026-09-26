@@ -44,10 +44,25 @@ function startMusic(){
  try{
    audioCtx=new (window.AudioContext||window.webkitAudioContext)();
    if(audioCtx.state==='suspended')audioCtx.resume();
-   const melody=[659,784,880,784,659,523,587,659, 698,880,988,880,698,587,523,587];
-   const bass=[131,131,165,165,147,147,196,196];
-   function tone(freq,dur,type='square',vol=.045){
-     const now=audioCtx.currentTime;
+
+   // Longer 64-step retro melody with several phrases.
+   const melody=[
+     659,784,880,784,659,587,523,587,
+     659,784,988,880,784,659,587,523,
+     698,784,880,988,880,784,698,659,
+     587,659,784,880,784,659,587,523,
+     659,784,880,784,659,587,523,659,
+     784,880,988,880,784,698,659,587,
+     698,880,988,1047,988,880,784,698,
+     659,587,523,587,659,784,659,523
+   ];
+   const bass=[
+     131,131,165,165,147,147,196,196,
+     131,131,165,165,175,175,147,147
+   ];
+
+   function tone(freq,dur,type='square',vol=.025,when=0){
+     const now=audioCtx.currentTime+when;
      const osc=audioCtx.createOscillator(), gain=audioCtx.createGain();
      osc.type=type;osc.frequency.value=freq;
      gain.gain.setValueAtTime(vol,now);
@@ -55,18 +70,56 @@ function startMusic(){
      osc.connect(gain);gain.connect(audioCtx.destination);
      osc.start(now);osc.stop(now+dur);
    }
+
+   function drum(type,when){
+     const now=audioCtx.currentTime+when;
+     const osc=audioCtx.createOscillator(), gain=audioCtx.createGain();
+     if(type==='kick'){
+       osc.type='sine';osc.frequency.setValueAtTime(120,now);
+       osc.frequency.exponentialRampToValueAtTime(55,now+.09);
+       gain.gain.setValueAtTime(.035,now);
+       gain.gain.exponentialRampToValueAtTime(.001,now+.11);
+     }else{
+       osc.type='square';osc.frequency.value=150;
+       gain.gain.setValueAtTime(.018,now);
+       gain.gain.exponentialRampToValueAtTime(.001,now+.045);
+     }
+     osc.connect(gain);gain.connect(audioCtx.destination);
+     osc.start(now);osc.stop(now+.12);
+   }
+
    function tick(){
-     if(!playing){musicTimer=setTimeout(tick,180);return}
-     const i=musicStep%16;
-     tone(melody[i],.12,'square',.035);
-     if(i%2===0)tone(bass[(i/2)%8],.18,'triangle',.045);
-     if(i%4===0)tone(82,.045,'square',.018);
+     if(!playing){musicTimer=setTimeout(tick,160);return}
+     const i=musicStep%64;
+     tone(melody[i],.105,'square',.022);
+     if(i%4===0)tone(bass[(i/4)%16],.16,'triangle',.028);
+
+     // Quiet retro drum groove.
+     if(i%4===0 || i%4===2)drum('kick',0);
+     if(i%4===1 || i%4===3)drum('snare',0);
+
      musicStep++;
-     musicTimer=setTimeout(tick,125);
+     musicTimer=setTimeout(tick,115);
    }
    tick();
  }catch(e){}
 }
+
+function jumpSound(){
+ if(!audioCtx)return;
+ try{
+   const now=audioCtx.currentTime;
+   const osc=audioCtx.createOscillator(),gain=audioCtx.createGain();
+   osc.type='square';
+   osc.frequency.setValueAtTime(260,now);
+   osc.frequency.exponentialRampToValueAtTime(620,now+.16);
+   gain.gain.setValueAtTime(.035,now);
+   gain.gain.exponentialRampToValueAtTime(.001,now+.18);
+   osc.connect(gain);gain.connect(audioCtx.destination);
+   osc.start(now);osc.stop(now+.2);
+ }catch(e){}
+}
+
 function reset(){
  playing=true;dead=false;distance=0;speed=390;spawn=.9;
  player={x:W*.15,y:ground-70,w:34,h:70,vy:0,onGround:true,run:0};
@@ -78,7 +131,7 @@ function jump(){
  startMusic();
  if(!playing){reset();return}
  if(dead){reset();return}
- if(player.onGround){player.vy=-780;player.onGround=false}
+ if(player.onGround){player.vy=-780;player.onGround=false;jumpSound()}
 }
 addEventListener('pointerdown',e=>{if(e.target.id!=='jump')jump()});
 document.getElementById('jump').addEventListener('pointerdown',e=>{e.preventDefault();jump()});
