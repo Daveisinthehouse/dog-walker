@@ -57,7 +57,7 @@ function rectHit(a,b){return a.x+5<b.x+b.w-4&&a.x+a.w-5>b.x+4&&a.y+8<b.y+b.h&&a.
 function spawnPoop(){
  const size=18+Math.random()*7;
  poops.push({x:W+20,y:ground-size*.72,w:size*1.35,h:size*.72});
- if(Math.random()<.55)dogs.push({x:W+70,y:ground-52,w:58,h:52,leg:0});
+ if(Math.random()<.55)dogs.push({x:W+70,y:ground-52,w:58,h:52});
 }
 function drawBackground(dt){
  ctx.fillStyle='#8fd4ff';ctx.fillRect(0,0,W,H);
@@ -75,14 +75,14 @@ function drawBackground(dt){
  });
 
  // far hills — very slow
- const farOff=-(distance*.035%180);
+ const farOff=-(distance*.18%180);
  ctx.fillStyle='#9acb9a';
  for(let x=farOff-180;x<W+180;x+=180){
    ctx.beginPath();ctx.arc(x+90,ground-125,92,Math.PI,Math.PI*2);ctx.fill();
  }
 
  // midground tree layer — classic 16-bit chunky trees
- const midOff=-(distance*.11%150);
+ const midOff=-(distance*.95%150);
  for(let x=midOff-150;x<W+150;x+=150){
    const y=ground-55;
    ctx.fillStyle='#765034';ctx.fillRect(x+66,y-48,13,55);
@@ -140,9 +140,9 @@ function drawPoop(o){
  ctx.fillStyle='#8c582d';ctx.beginPath();ctx.arc(o.w*.7,o.h*.45,2.5,0,7);ctx.fill();ctx.restore();
 }
 function drawDog(d){
- // Dog faces LEFT and walks LEFT, matching the side-scrolling world.
+ // Dog faces LEFT and stays planted while the world scrolls past.
  ctx.save();ctx.translate(d.x,d.y);
- const step=Math.sin(d.leg*11)*5;
+ const step=0;
  // shadow
  ctx.fillStyle='#0003';ctx.beginPath();ctx.ellipse(29,50,27,5,0,0,7);ctx.fill();
  // tail, raised and wagging
@@ -180,7 +180,7 @@ function update(dt){
  player.vy+=2100*dt;player.y+=player.vy*dt;
  if(player.y+player.h>=ground){player.y=ground-player.h;player.vy=0;player.onGround=true}
  spawn-=dt;if(spawn<=0){spawnPoop();spawn=Math.max(.62,1.25-speed/1200)+(Math.random()*.55);if(Math.random()<.16)spawn-=.2}
- poops.forEach(o=>o.x-=speed*dt);dogs.forEach(d=>{d.x-=speed*dt;d.leg+=dt});
+ poops.forEach(o=>o.x-=speed*dt);dogs.forEach(d=>d.x-=speed*dt);
  poops=poops.filter(o=>o.x>-60);dogs=dogs.filter(d=>d.x>-100);
  for(const o of poops)if(rectHit(player,o)){gameOver();break}
 }
