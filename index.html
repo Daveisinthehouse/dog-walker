@@ -99,7 +99,7 @@ function startMusic(){
      if(i%4===1 || i%4===3)drum('snare',0);
 
      musicStep++;
-     musicTimer=setTimeout(tick,115);
+     const tempo=Math.max(72,115-(speed-390)*0.055); musicTimer=setTimeout(tick,tempo);
    }
    tick();
  }catch(e){}
@@ -143,6 +143,11 @@ function spawnPoop(){
  // Vary the horizontal relationship between each dog and its poop.
  const poopX=W+10+Math.random()*95;
  poops.push({x:poopX,y:ground-size*.72,w:size*1.35,h:size*.72});
+ if(Math.random()<.22){
+   const gap=22+Math.random()*18;
+   const size2=17+Math.random()*6;
+   poops.push({x:poopX+gap,y:ground-size2*.72,w:size2*1.35,h:size2*.72});
+ }
  if(Math.random()<.62){
    const colors=[
      {body:'#a96b3d',light:'#c5844d',dark:'#754526'},
@@ -314,7 +319,7 @@ function drawDog(d){
 function update(dt){
  if(!playing||dead)return;
  distance+=speed*dt/100;
- speed+=dt*5;
+ speed+=dt*7.5;
  player.run+=dt;
  player.vy+=2100*dt;player.y+=player.vy*dt;
  if(player.y+player.h>=ground){player.y=ground-player.h;player.vy=0;player.onGround=true}
