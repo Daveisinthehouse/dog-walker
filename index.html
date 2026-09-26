@@ -60,19 +60,7 @@ function spawnPoop(){
  if(Math.random()<.55)dogs.push({x:W+70,y:ground-52,w:58,h:52});
 }
 function drawBackground(dt){
- ctx.fillStyle='#8b5a36';ctx.fillRect(0,0,W,H);
- // subtle 16-bit dirt blemishes behind the trees
- ctx.fillStyle='#704526';
- const blemishOff=-(distance*1.1%37);
- for(let x=blemishOff-37;x<W+37;x+=37){
-   const y=55+((Math.floor(x/37)%5)*28);
-   ctx.fillRect(x,y,3,2);ctx.fillRect(x+11,y+14,5,2);ctx.fillRect(x+25,y+5,2,3);
- }
- ctx.fillStyle='#a16c43';
- for(let x=blemishOff-20;x<W+37;x+=53){
-   const y=82+((Math.floor(x/53)%4)*31);
-   ctx.fillRect(x,y,4,2);ctx.fillRect(x+17,y+11,2,2);
- }
+ ctx.fillStyle='#8fd4ff';ctx.fillRect(0,0,W,H);
 
  // 16-bit style parallax clouds — slowest layer
  clouds.forEach(c=>{
