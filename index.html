@@ -82,7 +82,7 @@ function drawBackground(dt){
  }
 
  // midground tree layer — classic 16-bit chunky trees
- const midOff=-(distance*.95%150);
+ const midOff=-(distance*2.05%150);
  for(let x=midOff-150;x<W+150;x+=150){
    const y=ground-55;
    ctx.fillStyle='#765034';ctx.fillRect(x+66,y-48,13,55);
