@@ -239,7 +239,8 @@ function drawBackground(dt){
  }
 
  // grass
- ctx.fillStyle='#68b95b';ctx.fillRect(0,ground,W,H-ground);
+ ctx.fillStyle='#315f35';ctx.fillRect(0,ground-85,W,85);
+ ctx.fillStyle='#68b95b';ctx.fillRect(0,ground,W, H-ground);
 
  // foreground hedge/grass tufts — faster layer
  const fgOff=-(distance*.75%52);
