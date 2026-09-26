@@ -177,6 +177,7 @@ function jump(){
  if(player.onGround){player.vy=-780;player.onGround=false;jumpSound()}
 }
 addEventListener('pointerdown',e=>{
+  if(dead)return;
   if(e.target.id==='jump')return;
   if(e.target.closest('button,input'))return;
   jump();
@@ -445,7 +446,7 @@ function gameOver(){
  best=Math.max(best,runScore);localStorage.dogWalkerBest=best;
  document.getElementById('best').textContent=best;
  const savedName=(localStorage.dogWalkerPlayer||'').replace(/"/g,'&quot;');
- document.getElementById('message').innerHTML='<div class="card"><h1>💩 SPLAT!</h1><p>You walked <b>'+runScore+'m</b></p><p>🏆 WORLD BEST: <b id="worldBestEnd">'+globalBest+'m</b></p><input id="playerName" maxlength="20" placeholder="Your name" value="'+savedName+'"><br><button id="submitScore">SAVE SCORE</button><div id="leaderboard"></div><p style="font-size:13px">Tap outside to play again</p></div>';
+ document.getElementById('message').innerHTML='<div class="card"><h1>💩 SPLAT!</h1><p>You walked <b>'+runScore+'m</b></p><p>🏆 WORLD BEST: <b id="worldBestEnd">'+globalBest+'m</b></p><input id="playerName" maxlength="20" placeholder="Your name" value="'+savedName+'"><br><button id="submitScore">SAVE SCORE</button> <button id="playAgain">PLAY AGAIN</button><div id="leaderboard"></div></div>';
  document.getElementById('message').classList.remove('hidden');
  document.getElementById('message').style.pointerEvents='auto';
  renderLeaderboard();
@@ -456,6 +457,11 @@ function gameOver(){
    btn.textContent=ok?'SAVED ✓':'TRY AGAIN';
    document.getElementById('worldBestEnd').textContent=globalBest+'m';
    renderLeaderboard();
+ });
+ document.getElementById('playAgain').addEventListener('click',e=>{
+   e.preventDefault();e.stopPropagation();
+   document.getElementById('message').style.pointerEvents='none';
+   reset();
  });
 }
 function renderLeaderboard(){
