@@ -93,6 +93,25 @@ function drawBackground(dt){
    ctx.beginPath();ctx.arc(x+90,ground-125,92,Math.PI,Math.PI*2);ctx.fill();
  }
 
+ // brown woodland ground behind the trees — fills the whole tree zone
+ ctx.fillStyle='#8b5a36';
+ ctx.fillRect(0,ground-390,W,390);
+ // scattered 16-bit dirt blemishes
+ const dirtOff=-(distance*1.35%29);
+ ctx.fillStyle='#704526';
+ for(let x=dirtOff-29;x<W+29;x+=29){
+   const y=ground-365+((Math.floor(x/29)%8)*39);
+   ctx.fillRect(x,y,3,2);
+   ctx.fillRect(x+9,y+17,5,2);
+   ctx.fillRect(x+21,y+7,2,3);
+ }
+ ctx.fillStyle='#a16c43';
+ for(let x=dirtOff-18;x<W+30;x+=47){
+   const y=ground-340+((Math.floor(x/47)%7)*43);
+   ctx.fillRect(x,y,4,2);
+   ctx.fillRect(x+14,y+12,2,2);
+ }
+
  // distant tree layer 1 — small, fast-moving silhouettes
  const distant1Off=-(distance*0.55%95);
  for(let x=distant1Off-95;x<W+95;x+=95){
