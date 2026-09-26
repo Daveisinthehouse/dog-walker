@@ -83,19 +83,19 @@ function drawBackground(dt){
 
  // brown woodland ground behind the trees — fills the whole tree zone
  ctx.fillStyle='#8b5a36';
- ctx.fillRect(0,ground-390,W,390);
+ ctx.fillRect(0,ground-170,W,170);
  // scattered 16-bit dirt blemishes
  const dirtOff=-(distance*1.35%29);
  ctx.fillStyle='#704526';
  for(let x=dirtOff-29;x<W+29;x+=29){
-   const y=ground-365+((Math.floor(x/29)%8)*39);
+   const y=ground-155+((Math.floor(x/29)%4)*32);
    ctx.fillRect(x,y,3,2);
    ctx.fillRect(x+9,y+17,5,2);
    ctx.fillRect(x+21,y+7,2,3);
  }
  ctx.fillStyle='#a16c43';
  for(let x=dirtOff-18;x<W+30;x+=47){
-   const y=ground-340+((Math.floor(x/47)%7)*43);
+   const y=ground-135+((Math.floor(x/47)%3)*38);
    ctx.fillRect(x,y,4,2);
    ctx.fillRect(x+14,y+12,2,2);
  }
