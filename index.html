@@ -31,7 +31,8 @@ canvas{display:block;width:100%;height:100%}
 <script>
 const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
 let W,H,dpr,ground,playing=false,dead=false,last=0,distance=0,best=+localStorage.dogWalkerBest||0;
-let speed=390,spawn=1.1,player,poops=[],dogs=[],clouds=[];\nlet scenerySeed=0;
+let speed=390,spawn=1.1,player,poops=[],dogs=[],clouds=[];
+let scenerySeed=0;
 document.getElementById('best').textContent=best;
 function resize(){dpr=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;canvas.width=W*dpr;canvas.height=H*dpr;canvas.style.width=W+'px';canvas.style.height=H+'px';ctx.setTransform(dpr,0,0,dpr,0,0);ground=H*.78;if(player)player.y=ground-player.h-player.vy*0}
 addEventListener('resize',resize);resize();
