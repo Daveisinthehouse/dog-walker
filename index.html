@@ -216,6 +216,35 @@ function drawBackground(dt){
    ctx.fillRect(c.x+4,c.y+10,c.s*.9,5);
  });
 
+ // distant mountains — extremely slow parallax layer
+ const mountainOff=-(distance*.055%420);
+ ctx.fillStyle='#7896a3';
+ for(let x=mountainOff-420;x<W+420;x+=420){
+   ctx.beginPath();
+   ctx.moveTo(x,ground-125);
+   ctx.lineTo(x+70,ground-225);
+   ctx.lineTo(x+125,ground-170);
+   ctx.lineTo(x+205,ground-285);
+   ctx.lineTo(x+285,ground-175);
+   ctx.lineTo(x+350,ground-235);
+   ctx.lineTo(x+420,ground-125);
+   ctx.closePath();
+   ctx.fill();
+ }
+ // softer mountain faces
+ ctx.fillStyle='#6f8995';
+ for(let x=mountainOff-420;x<W+420;x+=420){
+   ctx.beginPath();
+   ctx.moveTo(x+205,ground-285);
+   ctx.lineTo(x+125,ground-170);
+   ctx.lineTo(x+178,ground-194);
+   ctx.lineTo(x+205,ground-170);
+   ctx.lineTo(x+245,ground-198);
+   ctx.lineTo(x+285,ground-175);
+   ctx.closePath();
+   ctx.fill();
+ }
+
  // far hills — very slow
  const farOff=-(distance*.18%180);
  ctx.fillStyle='#9acb9a';
