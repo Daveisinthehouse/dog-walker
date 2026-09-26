@@ -16,6 +16,9 @@ canvas{display:block;width:100%;height:100%}
 .card{background:#ffffffdd;border:3px solid #17324d;border-radius:20px;padding:20px 28px;box-shadow:0 8px 30px #17324d33}
 .card h1{margin:0 0 5px;font-size:clamp(30px,6vw,58px)}
 .card p{margin:5px 0;font-size:clamp(15px,2.5vw,23px)}
+.card input{width:min(260px,80vw);padding:10px 12px;border:2px solid #17324d;border-radius:10px;font-size:16px;font-weight:700;text-align:center;margin:8px 0}
+.card button{padding:10px 16px;border:2px solid #17324d;border-radius:10px;background:#17324d;color:#fff;font-size:15px;font-weight:900}
+#leaderboard{margin:10px 0 0;text-align:left;font-size:14px;line-height:1.45}
 .hidden{display:none!important}
 #jump{position:absolute;right:max(22px,env(safe-area-inset-right));bottom:max(58px,calc(env(safe-area-inset-bottom) + 40px));width:92px;height:92px;border-radius:50%;border:3px solid #17324d;background:#ffffffcc;font-size:18px;font-weight:900;color:#17324d;box-shadow:0 5px 15px #17324d33}
 #fullscreen{position:absolute;left:max(16px,env(safe-area-inset-left));bottom:max(72px,calc(env(safe-area-inset-bottom) + 54px));padding:9px 12px;border-radius:12px;border:2px solid #17324d;background:#ffffffcc;color:#17324d;font-size:13px;font-weight:900;box-shadow:0 3px 10px #17324d33;z-index:10}
@@ -34,10 +37,47 @@ canvas{display:block;width:100%;height:100%}
 <script>
 const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
 let W,H,dpr,ground,playing=false,dead=false,last=0,distance=0,best=+localStorage.dogWalkerBest||0;
+let globalBest=0, leaderboard=[];
+const SUPABASE_URL='https://zdysonuwdhksijatkfpb.supabase.co';
+const SUPABASE_KEY='sb_publishable_Z3Kx0YrXscZzYYOIkDAoXg_1pNq7vA0';
 let speed=390,spawn=1.1,player,poops=[],dogs=[],clouds=[];
 let audioCtx=null,musicTimer=null,musicStep=0,musicStarted=false;
 let scenerySeed=0;
-document.getElementById('best').textContent=best;document.getElementById('allTime').textContent=best;document.getElementById('allTime').textContent=best;
+document.getElementById('best').textContent=best;document.getElementById('allTime').textContent='0';
+async function getGlobalScores(){
+  try{
+    const res=await fetch(SUPABASE_URL+'/rest/v1/scores?select=player_name,score,created_at&order=score.desc,created_at.asc&limit=10',{
+      headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY}
+    });
+    if(!res.ok)throw new Error('Leaderboard unavailable');
+    leaderboard=await res.json();
+    globalBest=leaderboard.length?leaderboard[0].score:0;
+    document.getElementById('allTime').textContent=globalBest;
+  }catch(e){
+    globalBest=best;
+    document.getElementById('allTime').textContent=globalBest;
+  }
+}
+async function submitScore(name,score){
+  const clean=(name||'Anonymous').trim().slice(0,20)||'Anonymous';
+  try{
+    const res=await fetch(SUPABASE_URL+'/rest/v1/scores',{
+      method:'POST',
+      headers:{
+        apikey:SUPABASE_KEY,
+        Authorization:'Bearer '+SUPABASE_KEY,
+        'Content-Type':'application/json',
+        Prefer:'return=minimal'
+      },
+      body:JSON.stringify({player_name:clean,score:Math.floor(score)})
+    });
+    if(!res.ok)throw new Error('Could not save score');
+    localStorage.dogWalkerPlayer=clean;
+    await getGlobalScores();
+    return true;
+  }catch(e){return false}
+}
+getGlobalScores();
 function resize(){dpr=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;canvas.width=W*dpr;canvas.height=H*dpr;canvas.style.width=W+'px';canvas.style.height=H+'px';ctx.setTransform(dpr,0,0,dpr,0,0);ground=H*.78;if(player)player.y=ground-player.h-player.vy*0}
 addEventListener('resize',resize);resize();
 
@@ -396,10 +436,32 @@ function update(dt){
  for(const o of poops)if(rectHit(player,o)){gameOver();break}
 }
 function gameOver(){
- dead=true;playing=false;best=Math.max(best,Math.floor(distance));localStorage.dogWalkerBest=best;
+ dead=true;playing=false;
+ const runScore=Math.floor(distance);
+ best=Math.max(best,runScore);localStorage.dogWalkerBest=best;
  document.getElementById('best').textContent=best;
- document.getElementById('message').innerHTML='<div class="card"><h1>💩 SPLAT!</h1><p>You walked <b>'+Math.floor(distance)+'m</b></p><p>Tap to try again</p></div>';
+ const savedName=(localStorage.dogWalkerPlayer||'').replace(/"/g,'&quot;');
+ document.getElementById('message').innerHTML='<div class="card"><h1>💩 SPLAT!</h1><p>You walked <b>'+runScore+'m</b></p><p>🏆 WORLD BEST: <b id="worldBestEnd">'+globalBest+'m</b></p><input id="playerName" maxlength="20" placeholder="Your name" value="'+savedName+'"><br><button id="submitScore">SAVE SCORE</button><div id="leaderboard"></div><p style="font-size:13px">Tap outside to play again</p></div>';
  document.getElementById('message').classList.remove('hidden');
+ document.getElementById('message').style.pointerEvents='auto';
+ renderLeaderboard();
+ document.getElementById('submitScore').addEventListener('click',async e=>{
+   e.stopPropagation();
+   const btn=e.currentTarget;btn.disabled=true;btn.textContent='SAVING...';
+   const ok=await submitScore(document.getElementById('playerName').value,runScore);
+   btn.textContent=ok?'SAVED ✓':'TRY AGAIN';
+   document.getElementById('worldBestEnd').textContent=globalBest+'m';
+   renderLeaderboard();
+ });
+}
+function renderLeaderboard(){
+ const el=document.getElementById('leaderboard');
+ if(!el)return;
+ const rows=leaderboard.slice(0,5).map((x,i)=>(i+1)+'. '+escapeHtml(x.player_name)+' — '+x.score+'m').join('<br>');
+ el.innerHTML=rows?'<b>TOP 5</b><br>'+rows:'No scores yet';
+}
+function escapeHtml(s){
+ return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 }
 function draw(){
  drawBackground(1/60);
