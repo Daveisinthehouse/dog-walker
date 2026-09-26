@@ -56,8 +56,24 @@ addEventListener('keydown',e=>{if(e.code==='Space'||e.code==='ArrowUp')jump()});
 function rectHit(a,b){return a.x+5<b.x+b.w-4&&a.x+a.w-5>b.x+4&&a.y+8<b.y+b.h&&a.y+a.h>b.y+4}
 function spawnPoop(){
  const size=18+Math.random()*7;
- poops.push({x:W+20,y:ground-size*.72,w:size*1.35,h:size*.72});
- if(Math.random()<.55)dogs.push({x:W+70,y:ground-52,w:58,h:52});
+ // Vary the horizontal relationship between each dog and its poop.
+ const poopX=W+10+Math.random()*95;
+ poops.push({x:poopX,y:ground-size*.72,w:size*1.35,h:size*.72});
+ if(Math.random()<.62){
+   const colors=[
+     {body:'#a96b3d',light:'#c5844d',dark:'#754526'},
+     {body:'#c08a55',light:'#ddb47a',dark:'#80552f'},
+     {body:'#8b5a3c',light:'#b87852',dark:'#5e3b2b'},
+     {body:'#d0a06a',light:'#e5c08b',dark:'#8a6038'},
+     {body:'#6f513c',light:'#967052',dark:'#493426'}
+   ];
+   const color=colors[Math.floor(Math.random()*colors.length)];
+   dogs.push({
+     x:W+55+Math.random()*85,
+     y:ground-52,w:58,h:52,
+     body:color.body,light:color.light,dark:color.dark
+   });
+ }
 }
 function drawBackground(dt){
  ctx.fillStyle='#8fd4ff';ctx.fillRect(0,0,W,H);
@@ -121,7 +137,7 @@ function drawBackground(dt){
  }
 
  // midground tree layer — classic 16-bit chunky trees
- const midOff=-(distance*4.2%150);
+ const midOff=-(distance*6.5%150);
  for(let x=midOff-150;x<W+150;x+=150){
    const y=ground-55;
    ctx.fillStyle='#765034';ctx.fillRect(x+66,y-48,13,55);
@@ -188,23 +204,23 @@ function drawDog(d){
  ctx.strokeStyle='#7a4a2b';ctx.lineWidth=5;ctx.lineCap='round';
  ctx.beginPath();ctx.moveTo(51,18);ctx.quadraticCurveTo(64,7,59,0);ctx.stroke();
  // body
- ctx.fillStyle='#a96b3d';ctx.fillRect(17,15,35,23);
- ctx.fillStyle='#c5844d';ctx.fillRect(23,11,24,9);
+ ctx.fillStyle=d.body;ctx.fillRect(17,15,35,23);
+ ctx.fillStyle=d.light;ctx.fillRect(23,11,24,9);
  // back highlight
- ctx.fillStyle='#c98a52';ctx.fillRect(24,14,25,4);
+ ctx.fillStyle=d.light;ctx.fillRect(24,14,25,4);
  // four chunky legs
- ctx.strokeStyle='#754526';ctx.lineWidth=7;
+ ctx.strokeStyle=d.dark;ctx.lineWidth=7;
  ctx.beginPath();
  ctx.moveTo(23,35);ctx.lineTo(20-step,49);
  ctx.moveTo(35,35);ctx.lineTo(37+step,49);
  ctx.moveTo(45,35);ctx.lineTo(43-step,49);
  ctx.stroke();
  // head at LEFT = clear direction of travel
- ctx.fillStyle='#a96b3d';ctx.beginPath();ctx.arc(12,19,14,0,7);ctx.fill();
+ ctx.fillStyle=d.body;ctx.beginPath();ctx.arc(12,19,14,0,7);ctx.fill();
  // muzzle
- ctx.fillStyle='#d39a65';ctx.fillRect(-2,22,13,8);
+ ctx.fillStyle=d.light;ctx.fillRect(-2,22,13,8);
  // floppy ear
- ctx.fillStyle='#754526';ctx.beginPath();ctx.moveTo(7,8);ctx.lineTo(-4,2);ctx.lineTo(1,21);ctx.lineTo(9,17);ctx.closePath();ctx.fill();
+ ctx.fillStyle=d.dark;ctx.beginPath();ctx.moveTo(7,8);ctx.lineTo(-4,2);ctx.lineTo(1,21);ctx.lineTo(9,17);ctx.closePath();ctx.fill();
  // eye + nose
  ctx.fillStyle='#161616';ctx.fillRect(7,15,3,3);ctx.fillRect(-2,25,4,4);
  // collar
