@@ -154,12 +154,20 @@ async function toggleFullscreen(){
       target.webkitRequestFullscreen();
       return;
     }
-    // iPhone/iPad Safari does not expose document fullscreen for normal web pages.
-    // The game can still be made full-screen by adding it to the Home Screen.
-    alert('On iPhone/iPad Safari, use Share → Add to Home Screen to play Dog Walker full screen.');
+    // iPhone/iPad browsers may not allow fullscreen from a normal web page.
+    // Show a friendly in-game message instead of a browser alert.
+    showFullscreenHelp();
   }catch(e){
-    if(!document.fullscreenElement) alert('Full screen is not available in this browser. Try Add to Home Screen on iPhone/iPad.');
+    showFullscreenHelp();
   }
+}
+function showFullscreenHelp(){
+  const message=document.getElementById('message');
+  message.innerHTML='<div class="card"><h1>⛶ Full Screen</h1><p>On iPhone, tap <b>Share</b> in your browser.</p><p>Choose <b>Add to Home Screen</b>, then open Dog Walker from your Home Screen.</p><p>Tap anywhere to close</p></div>';
+  message.classList.remove('hidden');
+  message.style.pointerEvents='auto';
+  const close=()=>{message.classList.add('hidden');message.style.pointerEvents='none';message.removeEventListener('pointerdown',close);};
+  message.addEventListener('pointerdown',close);
 }
 fullscreenBtn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();toggleFullscreen()});
 document.addEventListener('fullscreenchange',()=>{fullscreenBtn.textContent=document.fullscreenElement?'⛶ EXIT FULL SCREEN':'⛶ FULL SCREEN';});
