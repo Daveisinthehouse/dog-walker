@@ -176,7 +176,11 @@ function jump(){
  if(dead){reset();return}
  if(player.onGround){player.vy=-780;player.onGround=false;jumpSound()}
 }
-addEventListener('pointerdown',e=>{if(e.target.id!=='jump')jump()});
+addEventListener('pointerdown',e=>{
+  if(e.target.id==='jump')return;
+  if(e.target.closest('button,input'))return;
+  jump();
+});
 document.getElementById('jump').addEventListener('pointerdown',e=>{e.preventDefault();jump()});
 const fullscreenBtn=document.getElementById('fullscreen');
 async function toggleFullscreen(){
