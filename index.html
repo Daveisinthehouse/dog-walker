@@ -38,7 +38,7 @@ canvas{display:block;width:100%;height:100%}
 const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
 let W,H,dpr,ground,playing=false,dead=false,last=0,distance=0,best=+localStorage.dogWalkerBest||0;
 let globalBest=0, leaderboard=[];
-const LEADERBOARD_API='https://stock.todavidmoore.workers.dev';
+const LEADERBOARD_API='https://dog-walker.todavidmoore.workers.dev';
 let speed=390,spawn=1.1,player,poops=[],dogs=[],clouds=[];
 let audioCtx=null,musicTimer=null,musicStep=0,musicStarted=false;
 let scenerySeed=0;
