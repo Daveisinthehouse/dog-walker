@@ -1,0 +1,8 @@
+name = "dog-walker-leaderboard"
+main = "worker/index.js"
+compatibility_date = "2026-10-12"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "dog-walker-scores"
+database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
