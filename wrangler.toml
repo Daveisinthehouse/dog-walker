@@ -5,4 +5,4 @@ compatibility_date = "2026-10-12"
 [[d1_databases]]
 binding = "DB"
 database_name = "dog-walker-scores"
-database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+database_id = "38153244-7517-485d-a81c-e89ea90d400e"
