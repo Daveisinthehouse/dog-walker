@@ -60,8 +60,89 @@ function showFullscreenHelp(){const message=document.getElementById('message');m
 fullscreenBtn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();toggleFullscreen()});document.addEventListener('fullscreenchange',()=>{fullscreenBtn.textContent=document.fullscreenElement?'⛶ EXIT FULL SCREEN':'⛶ FULL SCREEN'});document.addEventListener('webkitfullscreenchange',()=>{fullscreenBtn.textContent=document.webkitFullscreenElement?'⛶ EXIT FULL SCREEN':'⛶ FULL SCREEN'});addEventListener('keydown',e=>{if(e.code==='Space'||e.code==='ArrowUp')jump()});
 function rectHit(a,b){return a.x+5<b.x+b.w-4&&a.x+a.w-5>b.x+4&&a.y+8<b.y+b.h&&a.y+a.h>b.y+4}
 function spawnPoop(){const size=18+Math.random()*7;const poopX=W+10+Math.random()*95;poops.push({x:poopX,y:ground-size*.72,w:size*1.35,h:size*.72});if(Math.random()<.22){const gap=22+Math.random()*18;const size2=17+Math.random()*6;poops.push({x:poopX+gap,y:ground-size2*.72,w:size2*1.35,h:size2*.72})}if(Math.random()<.62){const colors=[{body:'#a96b3d',light:'#c5844d',dark:'#754526'},{body:'#c08a55',light:'#ddb47a',dark:'#80552f'},{body:'#8b5a3c',light:'#b87852',dark:'#5e3b2b'},{body:'#d0a06a',light:'#e5c08b',dark:'#8a6038'},{body:'#6f513c',light:'#967052',dark:'#493426'}];const color=colors[Math.floor(Math.random()*colors.length)];dogs.push({x:W+55+Math.random()*85,y:ground-52,w:58,h:52,body:color.body,light:color.light,dark:color.dark})}}
-function drawBackground(dt){ctx.fillStyle='#8fd4ff';ctx.fillRect(0,0,W,H);clouds.forEach(c=>{c.x-=c.v*.18*dt;if(c.x<-120)c.x=W+120;ctx.fillStyle='#fff';ctx.fillRect(c.x,c.y,c.s*1.15,10);ctx.fillRect(c.x+8,c.y-7,c.s*.65,12);ctx.fillRect(c.x+c.s*.55,c.y-3,c.s*.55,10);ctx.fillStyle='#e5f6ff';ctx.fillRect(c.x+4,c.y+10,c.s*.9,5)});const mountainOff=-(distance*.055%420);ctx.fillStyle='#7896a3';for(let x=mountainOff-420;x<W+420;x+=420){ctx.beginPath();ctx.moveTo(x,ground-125);ctx.lineTo(x+70,ground-225);ctx.lineTo(x+125,ground-170);ctx.lineTo(x+205,ground-285);ctx.lineTo(x+285,ground-175);ctx.lineTo(x+350,ground-235);ctx.lineTo(x+420,ground-125);ctx.closePath();ctx.fill()}ctx.fillStyle='#6f8995';for(let x=mountainOff-420;x<W+420;x+=420){ctx.beginPath();ctx.moveTo(x+205,ground-285);ctx.lineTo(x+125,ground-170);ctx.lineTo(x+178,ground-194);ctx.lineTo(x+205,ground-170);ctx.lineTo(x+245,ground-198);ctx.lineTo(x+285,ground-175);ctx.closePath();ctx.fill()}const farOff=-(distance*.18%180);ctx.fillStyle='#9acb9a';for(let x=farOff-180;x<W+180;x+=180){ctx.beginPath();ctx.arc(x+90,ground-125,92,Math.PI,Math.PI*2);ctx.fill()}ctx.fillStyle='#b98255';ctx.fillRect(0,ground-85,W,85);const dirtOff=-(distance*1.35%29);ctx.fillStyle='#99643f';for(let x=dirtOff-29;x<W+29;x+=29){const y=ground-75+((Math.floor(x/29)%2)*24);ctx.fillRect(x,y,3,2);ctx.fillRect(x+9,y+17,5,2);ctx.fillRect(x+21,y+7,2,3)}ctx.fillStyle='#d09a6b';for(let x=dirtOff-18;x<W+30;x+=47){const y=ground-65+((Math.floor(x/47)%2)*25);ctx.fillRect(x,y,4,2);ctx.fillRect(x+14,y+12,2,2)}const distant1Off=-(distance*.55%95);for(let x=distant1Off-95;x<W+95;x+=95){const y=ground-72;ctx.fillStyle='#6fa878';ctx.fillRect(x+40,y-30,7,32);ctx.fillStyle='#5d9b67';ctx.fillRect(x+24,y-52,38,28);ctx.fillRect(x+31,y-62,24,16)}const distant2Off=-(distance*.85%125);for(let x=distant2Off-125;x<W+125;x+=125){const y=ground-63;ctx.fillStyle='#668f5d';ctx.fillRect(x+53,y-40,9,42);ctx.fillStyle='#4f8250';ctx.fillRect(x+34,y-69,48,32);ctx.fillRect(x+42,y-80,31,18)}const midOff=-(distance*6.5%150);for(let x=midOff-150;x<W+150;x+=150){const y=ground-55;ctx.fillStyle='#765034';ctx.fillRect(x+66,y-48,13,55);ctx.fillStyle='#4f9b55';ctx.fillRect(x+35,y-85,75,45);ctx.fillRect(x+48,y-100,48,20);ctx.fillStyle='#397943';ctx.fillRect(x+25,y-65,20,22);ctx.fillRect(x+102,y-67,18,24)}ctx.fillStyle='#315f35';ctx.fillRect(0,ground-85,W,85);ctx.fillStyle='#68b95b';ctx.fillRect(0,ground,W,H-ground);const fgOff=-(distance*.75%52);ctx.fillStyle='#4b9d4d';for(let x=fgOff-52;x<W+52;x+=52){ctx.fillRect(x,ground-8,4,8);ctx.fillRect(x+9,ground-13,4,13);ctx.fillRect(x+19,ground-7,4,7)}ctx.fillStyle='#b9b9b9';ctx.fillRect(0,ground-20,W,20);ctx.fillStyle='#8d8d8d';ctx.fillRect(0,ground,W,3);ctx.strokeStyle='#a2a2a2';ctx.lineWidth=2;const offset=-(distance*2.2%70);for(let x=offset;x<W;x+=70){ctx.beginPath();ctx.moveTo(x,ground-20);ctx.lineTo(x,ground);ctx.stroke()}}
-function drawPerson(){const p=player,bob=p.onGround?Math.sin(p.run*12)*2:0;ctx.save();ctx.translate(p.x,p.y+bob);ctx.fillStyle='#0003';ctx.beginPath();ctx.ellipse(17,72,23,5,0,0,7);ctx.fill();ctx.strokeStyle='#26384a';ctx.lineWidth=7;ctx.lineCap='round';let swing=p.onGround?Math.sin(p.run*12)*9:0;ctx.beginPath();ctx.moveTo(14,48);ctx.lineTo(11-swing*.35,68);ctx.moveTo(22,48);ctx.lineTo(25+swing*.35,68);ctx.stroke();ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(7-swing*.35,68);ctx.lineTo(15-swing*.35,68);ctx.moveTo(22+swing*.35,68);ctx.lineTo(31+swing*.35,68);ctx.stroke();ctx.fillStyle='#e85b52';ctx.fillRect(8,18,20,31);ctx.strokeStyle='#f0b58e';ctx.lineWidth=6;ctx.beginPath();ctx.moveTo(9,23);ctx.lineTo(1,39+swing*.25);ctx.moveTo(27,23);ctx.lineTo(34,38-swing*.25);ctx.stroke();ctx.fillStyle='#f0b58e';ctx.beginPath();ctx.arc(18,10,11,0,7);ctx.fill();ctx.fillStyle='#38271f';ctx.beginPath();ctx.arc(18,6,11,Math.PI,Math.PI*2);ctx.fill();ctx.fillRect(8,4,20,6);ctx.restore()}
+function drawBackground(dt){
+  // Bright blue sky and chunky, pixel-art clouds.
+  ctx.fillStyle='#8fd4ff';ctx.fillRect(0,0,W,H);
+  clouds.forEach(c=>{
+    c.x-=c.v*.18*dt;if(c.x<-120)c.x=W+120;
+    const x=Math.round(c.x),y=Math.round(c.y),w=Math.round(c.s);
+    ctx.fillStyle='#ffffff';ctx.fillRect(x,y,w+14,9);ctx.fillRect(x+8,y-7,Math.round(w*.62),12);ctx.fillRect(x+Math.round(w*.55),y-3,Math.round(w*.52),10);
+    ctx.fillStyle='#e5f6ff';ctx.fillRect(x+4,y+9,Math.round(w*.88),4);
+    ctx.fillStyle='#c4eaff';ctx.fillRect(x+12,y+13,Math.round(w*.48),2);
+  });
+
+  // Distant mountains move slowly; stepped highlights keep the 16-bit look.
+  const mountainOff=-(distance*13%440);
+  for(let x=mountainOff-440;x<W+440;x+=440){
+    ctx.fillStyle='#8ba9b6';ctx.beginPath();ctx.moveTo(x,ground-118);ctx.lineTo(x+76,ground-204);ctx.lineTo(x+118,ground-160);ctx.lineTo(x+218,ground-270);ctx.lineTo(x+296,ground-163);ctx.lineTo(x+356,ground-220);ctx.lineTo(x+440,ground-118);ctx.closePath();ctx.fill();
+    ctx.fillStyle='#d0e0df';ctx.fillRect(x+205,ground-251,14,7);ctx.fillRect(x+219,ground-244,12,7);ctx.fillRect(x+225,ground-237,11,6);
+    ctx.fillStyle='#708f9e';ctx.beginPath();ctx.moveTo(x+218,ground-270);ctx.lineTo(x+160,ground-181);ctx.lineTo(x+202,ground-197);ctx.lineTo(x+220,ground-181);ctx.lineTo(x+247,ground-205);ctx.lineTo(x+296,ground-163);ctx.closePath();ctx.fill();
+  }
+
+  // Rolling green hills: faster than mountains, slower than the forest.
+  const hillOff=-(distance*25%220);
+  for(let x=hillOff-220;x<W+220;x+=220){
+    ctx.fillStyle='#9bcf91';ctx.fillRect(x,ground-111,220,15);
+    ctx.fillStyle='#8bc483';ctx.fillRect(x+20,ground-126,150,15);ctx.fillRect(x+45,ground-137,92,11);
+    ctx.fillStyle='#b3d99b';ctx.fillRect(x+30,ground-121,45,5);ctx.fillRect(x+150,ground-111,28,5);
+  }
+
+  // Low woodland-coloured ground stays behind the tree trunks.
+  ctx.fillStyle='#9b704b';ctx.fillRect(0,ground-98,W,78);
+  ctx.fillStyle='#805638';ctx.fillRect(0,ground-24,W,4);
+  const soilOff=-(distance*100%37);
+  for(let x=soilOff-37;x<W+37;x+=37){
+    const xx=Math.round(x);
+    ctx.fillStyle='#754c34';ctx.fillRect(xx+4,ground-82,4,3);ctx.fillRect(xx+23,ground-57,3,3);ctx.fillRect(xx+12,ground-36,5,2);
+    ctx.fillStyle='#c18b5a';ctx.fillRect(xx+15,ground-72,5,2);ctx.fillRect(xx+29,ground-43,3,3);
+  }
+
+  // Distant trees: small, soft silhouettes with a slow parallax rate.
+  const farOff=-(distance*39%112);
+  for(let x=farOff-112;x<W+112;x+=112){
+    const y=ground-24,tx=Math.round(x+45);
+    ctx.fillStyle='#6c6546';ctx.fillRect(tx+12,y-49,6,49);
+    ctx.fillStyle='#699a62';ctx.fillRect(tx-5,y-70,39,23);ctx.fillRect(tx+2,y-82,25,14);ctx.fillRect(tx-12,y-60,17,15);
+    ctx.fillStyle='#85b873';ctx.fillRect(tx+2,y-70,14,5);ctx.fillRect(tx+17,y-82,8,5);
+  }
+
+  // Mid-distance trees move quicker and use distinct blocky canopy tiers.
+  const midOff=-(distance*66%158);
+  for(let x=midOff-158;x<W+158;x+=158){
+    const y=ground-23,tx=Math.round(x+58);
+    ctx.fillStyle='#69452f';ctx.fillRect(tx+18,y-68,10,68);ctx.fillRect(tx+12,y-35,6,12);
+    ctx.fillStyle='#397744';ctx.fillRect(tx-10,y-89,62,31);ctx.fillRect(tx+1,y-105,43,18);ctx.fillRect(tx-19,y-75,20,19);ctx.fillRect(tx+43,y-76,19,18);
+    ctx.fillStyle='#4e9950';ctx.fillRect(tx-4,y-85,25,8);ctx.fillRect(tx+8,y-101,21,6);ctx.fillRect(tx+39,y-70,10,7);
+    ctx.fillStyle='#2e683b';ctx.fillRect(tx+3,y-61,12,8);ctx.fillRect(tx+32,y-58,9,7);
+  }
+
+  // Near trees are the strongest parallax layer, almost keeping pace with hazards.
+  const nearOff=-(distance*88%196);
+  for(let x=nearOff-196;x<W+196;x+=196){
+    const y=ground-23,tx=Math.round(x+76);
+    ctx.fillStyle='#513a2a';ctx.fillRect(tx+22,y-86,16,86);ctx.fillRect(tx+14,y-39,8,16);ctx.fillRect(tx+38,y-30,8,12);
+    ctx.fillStyle='#285f36';ctx.fillRect(tx-13,y-110,83,33);ctx.fillRect(tx+1,y-129,56,22);ctx.fillRect(tx-25,y-94,24,21);ctx.fillRect(tx+57,y-96,22,20);
+    ctx.fillStyle='#367d42';ctx.fillRect(tx-5,y-105,27,11);ctx.fillRect(tx+10,y-124,26,7);ctx.fillRect(tx+43,y-106,18,8);ctx.fillRect(tx-17,y-89,13,8);
+    ctx.fillStyle='#55a34f';ctx.fillRect(tx+2,y-105,13,5);ctx.fillRect(tx+17,y-121,15,4);
+    ctx.fillStyle='#754c34';ctx.fillRect(tx+25,y-17,4,3);ctx.fillRect(tx+30,y-34,4,3);
+  }
+
+  // A thin grass verge and pixel tufts sit in front of the woodland.
+  ctx.fillStyle='#315f35';ctx.fillRect(0,ground-28,W,8);
+  ctx.fillStyle='#68b95b';ctx.fillRect(0,ground-20,W,4);
+  const grassOff=-(distance*100%43);
+  for(let x=grassOff-43;x<W+43;x+=43){
+    const xx=Math.round(x);
+    ctx.fillStyle='#4b9d4d';ctx.fillRect(xx,ground-29,4,8);ctx.fillRect(xx+8,ground-32,4,11);ctx.fillRect(xx+18,ground-27,4,6);ctx.fillRect(xx+29,ground-30,3,9);
+    ctx.fillStyle='#83ce61';ctx.fillRect(xx+8,ground-32,2,4);ctx.fillRect(xx+29,ground-30,2,3);
+  }
+
+  // Pixel-art pavement. Dashes now scroll at the same speed as the hazards.
+  ctx.fillStyle='#b9b9b9';ctx.fillRect(0,ground-20,W,20);
+  ctx.fillStyle='#8d8d8d';ctx.fillRect(0,ground,W,3);ctx.fillStyle='#d5d5d5';ctx.fillRect(0,ground-20,W,2);
+  ctx.fillStyle='#a2a2a2';const roadOff=-(distance*100%70);
+  for(let x=roadOff-70;x<W+70;x+=70){ctx.fillRect(Math.round(x),ground-12,34,3);ctx.fillRect(Math.round(x+3),ground-9,28,1);}
+}function drawPerson(){const p=player,bob=p.onGround?Math.sin(p.run*12)*2:0;ctx.save();ctx.translate(p.x,p.y+bob);ctx.fillStyle='#0003';ctx.beginPath();ctx.ellipse(17,72,23,5,0,0,7);ctx.fill();ctx.strokeStyle='#26384a';ctx.lineWidth=7;ctx.lineCap='round';let swing=p.onGround?Math.sin(p.run*12)*9:0;ctx.beginPath();ctx.moveTo(14,48);ctx.lineTo(11-swing*.35,68);ctx.moveTo(22,48);ctx.lineTo(25+swing*.35,68);ctx.stroke();ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(7-swing*.35,68);ctx.lineTo(15-swing*.35,68);ctx.moveTo(22+swing*.35,68);ctx.lineTo(31+swing*.35,68);ctx.stroke();ctx.fillStyle='#e85b52';ctx.fillRect(8,18,20,31);ctx.strokeStyle='#f0b58e';ctx.lineWidth=6;ctx.beginPath();ctx.moveTo(9,23);ctx.lineTo(1,39+swing*.25);ctx.moveTo(27,23);ctx.lineTo(34,38-swing*.25);ctx.stroke();ctx.fillStyle='#f0b58e';ctx.beginPath();ctx.arc(18,10,11,0,7);ctx.fill();ctx.fillStyle='#38271f';ctx.beginPath();ctx.arc(18,6,11,Math.PI,Math.PI*2);ctx.fill();ctx.fillRect(8,4,20,6);ctx.restore()}
 function drawPoop(o){ctx.save();ctx.translate(o.x,o.y);ctx.fillStyle='#70401f';ctx.beginPath();ctx.moveTo(0,o.h);ctx.quadraticCurveTo(3,2,o.w*.35,o.h*.55);ctx.quadraticCurveTo(o.w*.45,0,o.w*.65,o.h*.5);ctx.quadraticCurveTo(o.w*.9,o.h*.1,o.w,o.h);ctx.closePath();ctx.fill();ctx.fillStyle='#8c582d';ctx.beginPath();ctx.arc(o.w*.7,o.h*.45,2.5,0,7);ctx.fill();ctx.restore()}
 function drawDog(d){ctx.save();ctx.translate(d.x+d.w,d.y);ctx.scale(-1,1);ctx.fillStyle='#0003';ctx.beginPath();ctx.ellipse(29,50,27,5,0,0,7);ctx.fill();ctx.strokeStyle='#7a4a2b';ctx.lineWidth=5;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(51,18);ctx.quadraticCurveTo(64,7,59,0);ctx.stroke();ctx.fillStyle=d.body;ctx.fillRect(17,15,35,23);ctx.fillStyle=d.light;ctx.fillRect(23,11,24,9);ctx.fillStyle=d.light;ctx.fillRect(24,14,25,4);ctx.strokeStyle=d.dark;ctx.lineWidth=7;ctx.beginPath();ctx.moveTo(23,35);ctx.lineTo(20,49);ctx.moveTo(35,35);ctx.lineTo(37,49);ctx.moveTo(45,35);ctx.lineTo(43,49);ctx.stroke();ctx.fillStyle=d.body;ctx.beginPath();ctx.arc(12,19,14,0,7);ctx.fill();ctx.fillStyle=d.light;ctx.fillRect(-2,22,13,8);ctx.fillStyle=d.dark;ctx.beginPath();ctx.moveTo(7,8);ctx.lineTo(-4,2);ctx.lineTo(1,21);ctx.lineTo(9,17);ctx.closePath();ctx.fill();ctx.fillStyle='#161616';ctx.fillRect(7,15,3,3);ctx.fillRect(-2,25,4,4);ctx.fillStyle='#d94d4d';ctx.fillRect(5,27,13,4);ctx.restore()}
 function update(dt){if(!playing||dead)return;distance+=speed*dt/100;speed+=dt*7.5;player.run+=dt;player.vy+=2100*dt;player.y+=player.vy*dt;if(player.y+player.h>=ground){player.y=ground-player.h;player.vy=0;player.onGround=true}spawn-=dt;if(spawn<=0){spawnPoop();spawn=Math.max(.62,1.25-speed/1200)+(Math.random()*.55);if(Math.random()<.16)spawn-=.2}poops.forEach(o=>o.x-=speed*dt);dogs.forEach(d=>d.x-=speed*dt);poops=poops.filter(o=>o.x>-60);dogs=dogs.filter(d=>d.x>-100);for(const o of poops)if(rectHit(player,o)){gameOver();break}}
