@@ -189,8 +189,9 @@ function drawBackground(dt){
   }
 
   // Distant trees: small, soft silhouettes with a slow parallax rate.
-  const farOff=-(distance*39%112);
-  if(envIndex!==3)for(let x=farOff-112;x<W+112;x+=112){
+  const farSpacing=280;
+  const farOff=-(distance*39%farSpacing);
+  if(envIndex!==3)for(let x=farOff-farSpacing;x<W+farSpacing;x+=farSpacing){
     const y=ground-24,tx=Math.round(x+45);
     ctx.fillStyle='#6c6546';ctx.fillRect(tx+12,y-49,6,49);
     ctx.fillStyle='#699a62';ctx.fillRect(tx-5,y-70,39,23);ctx.fillRect(tx+2,y-82,25,14);ctx.fillRect(tx-12,y-60,17,15);
@@ -198,8 +199,9 @@ function drawBackground(dt){
   }
 
   // Mid-distance trees move quicker and use distinct blocky canopy tiers.
-  const midOff=-(distance*66%158);
-  if(envIndex!==3)for(let x=midOff-158;x<W+158;x+=158){
+  const midSpacing=330;
+  const midOff=-(distance*66%midSpacing);
+  if(envIndex!==3)for(let x=midOff-midSpacing;x<W+midSpacing;x+=midSpacing){
     const y=ground-23,tx=Math.round(x+58);
     ctx.fillStyle='#69452f';ctx.fillRect(tx+18,y-68,10,68);ctx.fillRect(tx+12,y-35,6,12);
     ctx.fillStyle='#397744';ctx.fillRect(tx-10,y-89,62,31);ctx.fillRect(tx+1,y-105,43,18);ctx.fillRect(tx-19,y-75,20,19);ctx.fillRect(tx+43,y-76,19,18);
@@ -208,8 +210,9 @@ function drawBackground(dt){
   }
 
   // Near trees are the strongest parallax layer, almost keeping pace with hazards.
-  const nearOff=-(distance*88%196);
-  if(envIndex!==3)for(let x=nearOff-196;x<W+196;x+=196){
+  const nearSpacing=410;
+  const nearOff=-(distance*88%nearSpacing);
+  if(envIndex!==3)for(let x=nearOff-nearSpacing;x<W+nearSpacing;x+=nearSpacing){
     const y=ground-23,tx=Math.round(x+76);
     ctx.fillStyle='#513a2a';ctx.fillRect(tx+22,y-86,16,86);ctx.fillRect(tx+14,y-39,8,16);ctx.fillRect(tx+38,y-30,8,12);
     ctx.fillStyle='#285f36';ctx.fillRect(tx-13,y-110,83,33);ctx.fillRect(tx+1,y-129,56,22);ctx.fillRect(tx-25,y-94,24,21);ctx.fillRect(tx+57,y-96,22,20);
@@ -237,21 +240,23 @@ function drawBackground(dt){
   ctx.fillStyle='#dedede';ctx.fillRect(0,ground+Math.max(18,(H-ground)*.35),W,3);
   ctx.fillStyle='#a2a2a2';const lowerRoadOff=-(distance*100%110);
   for(let x=lowerRoadOff-110;x<W+110;x+=110){ctx.fillRect(Math.round(x),ground+Math.max(34,(H-ground)*.68),48,3);}
-  // Scrolling cars on the busy-street environment (drawn over the road).
+  // Larger, more widely spaced cars on the busy-street environment.
   if(envIndex===3){
-    const spacing=W<500?250:310;
+    const spacing=W<500?780:930;
     const trafficOffset=-(distance*42%spacing);
     for(let x=trafficOffset-spacing;x<W+spacing;x+=spacing){
       const xx=Math.round(x),variant=Math.abs(Math.floor((x+spacing*100)%4));
-      const carY=ground-34-(variant%2)*7;
+      const carY=ground-78-(variant%2)*12;
       const carW=variant===1?100:84,carH=variant===1?31:26;
       const carColour=['#d9413e','#f2c84b','#397fc1','#eeeeea'][variant];
-      ctx.fillStyle='#34414d';ctx.fillRect(xx+4,carY+carH-2,carW-8,7);
-      ctx.fillStyle=carColour;ctx.fillRect(xx,carY+9,carW,carH-7);ctx.fillRect(xx+15,carY,carW-29,13);
-      ctx.fillStyle='#bfeeff';ctx.fillRect(xx+22,carY+3,16,8);ctx.fillRect(xx+45,carY+3,16,8);
-      ctx.fillStyle='#fff5c5';ctx.fillRect(xx+carW-5,carY+14,5,6);ctx.fillStyle='#ff6960';ctx.fillRect(xx,carY+14,5,6);
-      ctx.fillStyle='#252a30';ctx.fillRect(xx+13,carY+carH-2,15,12);ctx.fillRect(xx+carW-28,carY+carH-2,15,12);
-      ctx.fillStyle='#b9c3ca';ctx.fillRect(xx+17,carY+carH+1,7,4);ctx.fillRect(xx+carW-25,carY+carH+1,7,4);
+      ctx.save();ctx.translate(xx,carY);ctx.scale(3,3);
+      ctx.fillStyle='#34414d';ctx.fillRect(4,carH-2,carW-8,7);
+      ctx.fillStyle=carColour;ctx.fillRect(0,9,carW,carH-7);ctx.fillRect(15,0,carW-29,13);
+      ctx.fillStyle='#bfeeff';ctx.fillRect(22,3,16,8);ctx.fillRect(45,3,16,8);
+      ctx.fillStyle='#fff5c5';ctx.fillRect(carW-5,14,5,6);ctx.fillStyle='#ff6960';ctx.fillRect(0,14,5,6);
+      ctx.fillStyle='#252a30';ctx.fillRect(13,carH-2,15,12);ctx.fillRect(carW-28,carH-2,15,12);
+      ctx.fillStyle='#b9c3ca';ctx.fillRect(17,carH+1,7,4);ctx.fillRect(carW-25,carH+1,7,4);
+      ctx.restore();
     }
   }
 }function drawPerson(){
