@@ -184,8 +184,7 @@ function drawBackground(dt){
   for(let x=roadOff-70;x<W+70;x+=70){ctx.fillRect(Math.round(x),ground-12,34,3);ctx.fillRect(Math.round(x+3),ground-9,28,1);}
 }function drawPerson(){
   const p=player;
-  // Nine distinct poses paced at 50 ms each, matching the uploaded 9-frame GIF.
-  // Coordinates are joint positions relative to the shoulders/hips.
+  // Keep the reference GIF's nine timed running poses; only the character styling changes.
   const poses=[
     {a:[[-8,29],[-10,39],[7,28],[13,20]],l:[[-3,52],[-13,62],[9,48],[5,58]]},
     {a:[[-8,29],[-10,39],[7,28],[12,20]],l:[[-3,52],[-14,61],[9,49],[8,60]]},
@@ -205,33 +204,57 @@ function drawBackground(dt){
   ctx.translate(0,-66);
   ctx.lineCap='round';
   ctx.lineJoin='round';
-  ctx.strokeStyle='#000';
-  ctx.fillStyle='#000';
 
-  // Head and slightly forward-leaning torso.
-  ctx.beginPath();
-  ctx.arc(0,9,8.4,0,Math.PI*2);
-  ctx.fill();
-  ctx.lineWidth=7;
-  ctx.beginPath();
-  ctx.moveTo(0,18);
-  ctx.lineTo(-1,42);
-  ctx.stroke();
-
-  // Arms are drawn as thick, rounded two-segment limbs.
-  ctx.lineWidth=6.4;
+  // Skin-toned arms, keeping the exact joint positions from the reference cycle.
+  ctx.strokeStyle='#e9ad82';
+  ctx.lineWidth=3.8;
   ctx.beginPath();
   ctx.moveTo(-1,23);ctx.lineTo(pose.a[0][0],pose.a[0][1]);ctx.lineTo(pose.a[1][0],pose.a[1][1]);
   ctx.moveTo(1,23);ctx.lineTo(pose.a[2][0],pose.a[2][1]);ctx.lineTo(pose.a[3][0],pose.a[3][1]);
   ctx.stroke();
+  // Hands.
+  ctx.fillStyle='#e9ad82';
+  for(const hand of [pose.a[1],pose.a[3]]){
+    ctx.beginPath();ctx.arc(hand[0],hand[1],2.2,0,Math.PI*2);ctx.fill();
+  }
 
-  // Two independently animated legs; the key poses reproduce the GIF's long
-  // backward stride, high forward knee, and compact recovery/crossover poses.
-  ctx.lineWidth=7.2;
+  // Dark blue trousers follow the same animated knees and ankles.
+  ctx.strokeStyle='#263b59';
+  ctx.lineWidth=5.8;
   ctx.beginPath();
   ctx.moveTo(-1,42);ctx.lineTo(pose.l[0][0],pose.l[0][1]);ctx.lineTo(pose.l[1][0],pose.l[1][1]);
   ctx.moveTo(-1,42);ctx.lineTo(pose.l[2][0],pose.l[2][1]);ctx.lineTo(pose.l[3][0],pose.l[3][1]);
   ctx.stroke();
+
+  // Trainers at the feet, angled with each stride.
+  ctx.strokeStyle='#f4f1e9';
+  ctx.lineWidth=3.4;
+  ctx.beginPath();
+  ctx.moveTo(pose.l[1][0]-1,pose.l[1][1]);ctx.lineTo(pose.l[1][0]+4,pose.l[1][1]-1);
+  ctx.moveTo(pose.l[3][0]-1,pose.l[3][1]);ctx.lineTo(pose.l[3][0]+4,pose.l[3][1]-1);
+  ctx.stroke();
+
+  // Red running top with a compact human-shaped torso.
+  ctx.fillStyle='#d93432';
+  ctx.beginPath();
+  ctx.moveTo(-4,20);ctx.quadraticCurveTo(-7,21,-7,25);
+  ctx.lineTo(-5,37);ctx.quadraticCurveTo(-4,41,-1,42);
+  ctx.lineTo(3,42);ctx.quadraticCurveTo(6,41,5,37);
+  ctx.lineTo(6,25);ctx.quadraticCurveTo(5,21,2,20);
+  ctx.closePath();ctx.fill();
+  // Collar and a subtle shirt highlight.
+  ctx.strokeStyle='#9f2225';ctx.lineWidth=1.3;
+  ctx.beginPath();ctx.moveTo(-2,21);ctx.lineTo(0,24);ctx.lineTo(2,21);ctx.stroke();
+
+  // Neck and head, layered over the shoulders.
+  ctx.fillStyle='#e9ad82';
+  ctx.fillRect(-1.8,16,3.6,6);
+  ctx.beginPath();ctx.arc(0,9,8.1,0,Math.PI*2);ctx.fill();
+  // Simple hair cap and small ear for a more human silhouette.
+  ctx.fillStyle='#392820';
+  ctx.beginPath();ctx.arc(0,7.2,8.15,Math.PI,Math.PI*2);ctx.lineTo(7.5,7);ctx.quadraticCurveTo(3,3,-1,4);ctx.closePath();ctx.fill();
+  ctx.fillStyle='#e9ad82';ctx.beginPath();ctx.arc(7.5,10,1.5,0,Math.PI*2);ctx.fill();
+
   ctx.restore();
 }
 function drawPoop(o){ctx.save();ctx.translate(o.x,o.y);const t=performance.now()/360;ctx.strokeStyle='#806b3b';ctx.lineWidth=2;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(o.w*.28,-3);ctx.quadraticCurveTo(o.w*.05,-10+Math.sin(t+o.x*.02)*3,o.w*.28,-17);ctx.moveTo(o.w*.52,-4);ctx.quadraticCurveTo(o.w*.76,-12+Math.sin(t+1.7+o.x*.02)*3,o.w*.54,-21);ctx.moveTo(o.w*.75,-3);ctx.quadraticCurveTo(o.w*.98,-9+Math.sin(t+3+o.x*.02)*2,o.w*.78,-14);ctx.stroke();for(let i=0;i<2;i++){const a=t*(i?1.25:-1)+(o.x*.01)+i*Math.PI;const fx=o.w*.5+Math.cos(a)*(o.w*.65+5);const fy=-12+Math.sin(a*1.3)*(7+i*2);ctx.strokeStyle='#242424';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(fx-2,fy-2);ctx.lineTo(fx+2,fy+2);ctx.moveTo(fx+2,fy-2);ctx.lineTo(fx-2,fy+2);ctx.stroke();ctx.fillStyle='#252525';ctx.beginPath();ctx.arc(fx,fy,2,0,Math.PI*2);ctx.fill()}ctx.fillStyle='#70401f';ctx.beginPath();ctx.moveTo(0,o.h);ctx.quadraticCurveTo(3,2,o.w*.35,o.h*.55);ctx.quadraticCurveTo(o.w*.45,0,o.w*.65,o.h*.5);ctx.quadraticCurveTo(o.w*.9,o.h*.1,o.w,o.h);ctx.closePath();ctx.fill();ctx.fillStyle='#8c582d';ctx.beginPath();ctx.arc(o.w*.7,o.h*.45,2.5,0,7);ctx.fill();ctx.restore()}
