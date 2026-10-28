@@ -184,67 +184,53 @@ function drawBackground(dt){
   for(let x=roadOff-70;x<W+70;x+=70){ctx.fillRect(Math.round(x),ground-12,34,3);ctx.fillRect(Math.round(x+3),ground-9,28,1);}
 }function drawPerson(){
   const p=player;
-  const running=p.onGround;
-  const phase=p.run*8.5;
-  const swing=running?Math.sin(phase):0;
-  const lift=running?Math.max(0,Math.cos(phase)):0;
-  const bounce=running?(1-Math.cos(phase*2))*1.1:0;
-  const lean=running?2.5:0;
-  // Bold black silhouette stickman, with a high-knee running cycle.
+  // Nine distinct poses paced at 50 ms each, matching the uploaded 9-frame GIF.
+  // Coordinates are joint positions relative to the shoulders/hips.
+  const poses=[
+    {a:[[-8,29],[-10,39],[7,28],[13,20]],l:[[-3,52],[-13,62],[9,48],[5,58]]},
+    {a:[[-8,29],[-10,39],[7,28],[12,20]],l:[[-3,52],[-14,61],[9,49],[8,60]]},
+    {a:[[-7,29],[-9,40],[7,28],[8,34]],l:[[-7,53],[-20,60],[8,49],[13,61]]},
+    {a:[[-5,30],[-3,41],[7,29],[13,27]],l:[[-3,53],[-15,56],[7,52],[16,64]]},
+    {a:[[-3,30],[-2,41],[7,30],[13,31]],l:[[-2,53],[-14,54],[5,53],[13,64]]},
+    {a:[[-2,30],[-1,41],[6,31],[11,36]],l:[[-3,52],[-15,53],[5,54],[12,64]]},
+    {a:[[-2,30],[-1,41],[6,31],[10,38]],l:[[-3,52],[-14,54],[3,54],[7,67]]},
+    {a:[[-6,30],[-10,40],[7,29],[13,27]],l:[[-3,53],[-8,64],[7,51],[12,60]]},
+    {a:[[-8,29],[-10,39],[7,28],[13,20]],l:[[-3,52],[-13,62],[9,48],[5,58]]}
+  ];
+  const frame=p.onGround?Math.floor(performance.now()/50)%poses.length:0;
+  const pose=poses[frame];
   ctx.save();
   ctx.translate(p.x+p.w/2,p.y+p.h);
   ctx.scale(1.25,1.25);
-  ctx.translate(0,-66+bounce);
+  ctx.translate(0,-66);
   ctx.lineCap='round';
   ctx.lineJoin='round';
-  ctx.strokeStyle='#050505';
-  ctx.fillStyle='#050505';
-  ctx.lineWidth=6.2;
+  ctx.strokeStyle='#000';
+  ctx.fillStyle='#000';
 
-  // Head and torso.
+  // Head and slightly forward-leaning torso.
   ctx.beginPath();
   ctx.arc(0,9,8.4,0,Math.PI*2);
   ctx.fill();
-  ctx.beginPath();
-  ctx.moveTo(0,18);
-  ctx.lineTo(lean,42);
-  ctx.stroke();
-
-  // Bent arms pump in opposition to the legs.
-  const armSwing=running?swing:0;
-  ctx.lineWidth=6.2;
-  ctx.beginPath();
-  ctx.moveTo(0,23);
-  ctx.lineTo(-8-armSwing*3,29+Math.max(0,armSwing)*2);
-  ctx.lineTo(-11-armSwing*2,39-Math.max(0,-armSwing)*3);
-  ctx.moveTo(1,23);
-  ctx.lineTo(7+armSwing*3,28-Math.max(0,armSwing)*3);
-  ctx.lineTo(13+armSwing*2,20+Math.max(0,armSwing)*2);
-  ctx.stroke();
-
-  // Opposite legs alternate between a forward knee lift and a long rear stride.
-  const stride=running?swing:0;
-  const leftKneeX=-3-stride*7;
-  const leftKneeY=52-Math.max(0,-stride)*5;
-  const leftFootX=-8-stride*13;
-  const leftFootY=62-Math.max(0,-stride)*9;
-  const rightKneeX=3+stride*7;
-  const rightKneeY=51-Math.max(0,stride)*7;
-  const rightFootX=9+stride*13;
-  const rightFootY=62-Math.max(0,stride)*10;
   ctx.lineWidth=7;
   ctx.beginPath();
-  if(running){
-    ctx.moveTo(lean,42);
-    ctx.lineTo(leftKneeX,leftKneeY);
-    ctx.lineTo(leftFootX,leftFootY);
-    ctx.moveTo(lean,42);
-    ctx.lineTo(rightKneeX,rightKneeY);
-    ctx.lineTo(rightFootX,rightFootY);
-  }else{
-    ctx.moveTo(lean,42);ctx.lineTo(-5,53);ctx.lineTo(-8,62);
-    ctx.moveTo(lean,42);ctx.lineTo(5,53);ctx.lineTo(8,62);
-  }
+  ctx.moveTo(0,18);
+  ctx.lineTo(-1,42);
+  ctx.stroke();
+
+  // Arms are drawn as thick, rounded two-segment limbs.
+  ctx.lineWidth=6.4;
+  ctx.beginPath();
+  ctx.moveTo(-1,23);ctx.lineTo(pose.a[0][0],pose.a[0][1]);ctx.lineTo(pose.a[1][0],pose.a[1][1]);
+  ctx.moveTo(1,23);ctx.lineTo(pose.a[2][0],pose.a[2][1]);ctx.lineTo(pose.a[3][0],pose.a[3][1]);
+  ctx.stroke();
+
+  // Two independently animated legs; the key poses reproduce the GIF's long
+  // backward stride, high forward knee, and compact recovery/crossover poses.
+  ctx.lineWidth=7.2;
+  ctx.beginPath();
+  ctx.moveTo(-1,42);ctx.lineTo(pose.l[0][0],pose.l[0][1]);ctx.lineTo(pose.l[1][0],pose.l[1][1]);
+  ctx.moveTo(-1,42);ctx.lineTo(pose.l[2][0],pose.l[2][1]);ctx.lineTo(pose.l[3][0],pose.l[3][1]);
   ctx.stroke();
   ctx.restore();
 }
