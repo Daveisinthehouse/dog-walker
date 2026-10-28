@@ -86,7 +86,7 @@ function drawBackground(dt){
 
   // Distant mountains move slowly; stepped highlights keep the 16-bit look.
   const mountainOff=-(distance*13%440);
-  for(let x=mountainOff-440;x<W+440;x+=440){
+  if(Math.floor(distance/250)%ENVIRONMENTS.length===0)for(let x=mountainOff-440;x<W+440;x+=440){
     ctx.fillStyle='#8ba9b6';ctx.beginPath();ctx.moveTo(x,ground-118);ctx.lineTo(x+76,ground-204);ctx.lineTo(x+118,ground-160);ctx.lineTo(x+218,ground-270);ctx.lineTo(x+296,ground-163);ctx.lineTo(x+356,ground-220);ctx.lineTo(x+440,ground-118);ctx.closePath();ctx.fill();
     ctx.fillStyle='#d0e0df';ctx.fillRect(x+205,ground-251,14,7);ctx.fillRect(x+219,ground-244,12,7);ctx.fillRect(x+225,ground-237,11,6);
     ctx.fillStyle='#708f9e';ctx.beginPath();ctx.moveTo(x+218,ground-270);ctx.lineTo(x+160,ground-181);ctx.lineTo(x+202,ground-197);ctx.lineTo(x+220,ground-181);ctx.lineTo(x+247,ground-205);ctx.lineTo(x+296,ground-163);ctx.closePath();ctx.fill();
